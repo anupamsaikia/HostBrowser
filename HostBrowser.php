@@ -2,34 +2,37 @@
 /*
 HostBrowser v1.0.0 by Snehanshu Phukon
 Email: snehanshu.glt@gmail.com
+Twitter: https://twitter.com/SnehanshuPhukon
+GitHub: https://github.com/SnehanshuPhukon/HostBrowser
 
-Note: This software is released under GNU GPL liscence.
-		Therefore any one can use it, distribute,
-		sell or modify without any permission from
-		the author.
-*/
+Note:   This software is released under GNU GPL liscence.
+        Therefore any one can use it, distribute, sell 
+        or modify without any permission from the author.
 
-/*
+////////////////////////////////////////////////////////////
 CONFIGURATIONS START
 */
 $conf = array();//This array will contain all the settings
 
 $conf['password'] = "browse";//This is the password you'll need
-							//in order to protect your private 
-							//files from public.
+			     //to protect your private files from public.
 /*
 CONFIGURATIONS END
 */
 ////DO NOT MODIFY BELOW THIS LINE (IF YOU ARE NOT A PROGRAMMER)
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////
 
 session_start();
 const V = '1.0.0';
 define('URL', $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI']);
 ignore_user_abort(true);
 $pastebtn = false;
+$GLOBALS['echo'] = "<!--\nHostBrowser v".V." by Snehanshu Phukon
+Email: snehanshu.glt@gmail.com
+Twitter: https://twitter.com/SnehanshuPhukon
+GitHub: https://github.com/SnehanshuPhukon/HostBrowser\n-->\n";
 
-$GLOBALS['echo'] ="<!doctype html><html><head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'><title>HostBrowser - A non-FTP Webhost Filemanager</title><style>body{font-family:arial;margin:0px;background-color:#E0EBF6;height:100%}a{color:#06F;text-decoration:none}a:hover{text-decoration:underline}input,select,textarea,button,.btn{border-radius:5px;background-color:#EAEAEA;border:solid 1px #03F;padding:3px;color:#000}input:hover,select:hover,textarea:hover,button:hover,.btn:hover{background-color:#C8C8C8;text-decoration:none}input:focus,textarea:focus{background-color:#555;color:#FFF;border:dashed 1px #fff;}footer{bottom:0px;width:95%;clear:both;overflow:hidden;background-color:#F3CECE;padding:7px;text-align:center;margin-top:50px;margin-left:0px;border-top:solid 1px #03F}.inline-menu{list-style-type:none}.inline-menu>li{display:inline-block;margin-left:4px}.block{background-color:#FFF;border:solid 1px #03F;border-radius:3px;margin-top:10px}.block-header{font-size:24px;font-weight:bold;padding:3px;background-color:#F3CECE}.block-body{padding:10px;background:transparent}.opt{font-size:12px;padding:0px;margin:0px}.main{padding:5px}.overview{width:100%;height:75%;float:left;clear:left;background-color:#E0EBF6;border:solid 1px #03F}.addr_bar{width:80%}.addr_bar>form>input{width:80%;padding:5px}.browser{list-style-type:none}.browser>li{padding:4px}.odd{background-color:#FFF}.even{}.even:hover,.odd:hover{background-color:#D9D9D9}</style></head><body>";
+$GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'><title>HostBrowser - A non-FTP Webhost Filemanager</title><style>body{font-family:arial;margin:0px;background-color:#E0EBF6;height:100%}a{color:#06F;text-decoration:none}a:hover{text-decoration:underline}input,select,textarea,button,.btn{border-radius:5px;background-color:#EAEAEA;border:solid 1px #03F;padding:3px;color:#000}input:hover,select:hover,textarea:hover,button:hover,.btn:hover{background-color:#C8C8C8;text-decoration:none}input:focus,textarea:focus{background-color:#555;color:#FFF;border:dashed 1px #fff;}footer{bottom:0px;width:95%;clear:both;overflow:hidden;background-color:#F3CECE;padding:7px;text-align:center;margin-top:50px;margin-left:0px;border-top:solid 1px #03F}.inline-menu{list-style-type:none}.inline-menu>li{display:inline-block;margin-left:4px}.block{background-color:#FFF;border:solid 1px #03F;border-radius:3px;margin-top:10px}.block-header{font-size:24px;font-weight:bold;padding:3px;background-color:#F3CECE}.block-body{padding:10px;background:transparent}.opt{font-size:12px;padding:0px;margin:0px}.main{padding:5px}.overview{width:100%;height:75%;float:left;clear:left;background-color:#E0EBF6;border:solid 1px #03F}.addr_bar{width:80%}.addr_bar>form>input{width:80%;padding:5px}.browser{list-style-type:none}.browser>li{padding:4px}.odd{background-color:#FFF}.even{}.even:hover,.odd:hover{background-color:#D9D9D9}</style></head><body>";
 
 	$act = isset($_GET['act'])?$_GET['act']:'browse';
 	if(isLogged()){
@@ -51,15 +54,15 @@ $GLOBALS['echo'] ="<!doctype html><html><head><meta http-equiv='Content-Type' co
 					}else $GLOBALS['echo'] .= "Clipboard is empty";
 					
 					$GLOBALS['echo'] .= "</div></div>";
-					$path = sanitizePath(isset($_GET['path'])?$_GET['path']:"./");
-					$ref = isset($_GET['ref'])?$_GET['ref']:$_SERVER['SCRIPT_FILENAME'];
+					$path = sanitizePath(isset($_GET['path'])?$_GET['path']:".");
+					$ref = isset($_GET['ref'])?$_GET['ref']:".";
 					$isDir = is_dir($path);
 					$thisDir = sanitizePath( $isDir? $path: dirname($path));
 					$parent = (isUpperDir($path)?$path.'../':dirname($path));
 					$GLOBALS['echo'] .= "</td>";
 					
 					$GLOBALS['echo'] .= "<td valign='top' class='main'>";
-					$GLOBALS['echo'] .= "<div class='addr_bar'><form><span>We are at <a href='?path=".urlencode($ref)."&ref=".urlencode($thisDir)."' title='Go back' class='btn'>&larr;</a></span>&nbsp;<input type='hidden' name='act' value='browse'><input type='text' name='path' autocomplete='off' placeholder='Enter path here...' value='".htmlspecialchars($thisDir)."'>&nbsp;<button type='submit'>Go</button></form>";
+					$GLOBALS['echo'] .= "<div class='addr_bar'><form><span>We are at <a href='?path=".urlencode($ref)."&ref=".urlencode($thisDir)."' title='Goto Last location' class='btn'>&larr;</a></span>&nbsp;<input type='hidden' name='act' value='browse'><input type='text' name='path' autocomplete='off' placeholder='Enter path here...' value='".htmlspecialchars($thisDir)."'>&nbsp;<button type='submit'>Go</button></form>";
 					if(file_exists($path)){
 						
 						$GLOBALS['echo'] .= "</div>";
@@ -71,7 +74,7 @@ $GLOBALS['echo'] ="<!doctype html><html><head><meta http-equiv='Content-Type' co
 							$browsedfiles = array();
 							foreach($files as $file){
 								if(is_dir($thisDir.$file) && $file != '.' && $file != '..'){
-									$browsedfiles[] = "<tr class='".($i%2==0?"even":"odd")."'><td><input type='checkbox' name='obj[]' value='".htmlspecialchars($thisDir.$file)."'></td><td>[DIR] <a href='?path=".urlencode($thisDir.$file).'&ref='.urlencode($thisDir)."' title='Enter this Directory'>".htmlspecialchars($file,ENT_COMPAT,"UTF-8")."/</a></td><td></td><td></td><td><a class='opt' href='?act=exec&subact=rename&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Rename</a>&nbsp;<a class='opt' href='?act=exec&subact=del&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."' style='color:red;'>Delete</a>&nbsp;<a class='opt' href='?act=exec&subact=copy&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Copy</a>&nbsp;<a class='opt' href='?act=exec&subact=cut&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Cut</a><!--&nbsp;<a class='opt' href='?act=exec&subact=perm&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Permissions</a>-->&nbsp;<a class='opt' href='?act=dirprop&dir=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Properties</a>&nbsp;<a class='opt' href='?act=compress&dir=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Compress</a></td></tr>\n";
+									$browsedfiles[] = "<tr class='".($i%2==0?"even":"odd")."'><td><input type='checkbox' name='obj[]' value='".htmlspecialchars($thisDir.$file)."'></td><td>[DIR] <a href='?path=".urlencode($thisDir.$file).'&ref='.urlencode($thisDir)."' title='Enter this Directory'>".htmlspecialchars($file,ENT_COMPAT,"UTF-8")."/</a></td><td></td><td></td><td><a class='opt' href='?act=exec&subact=rename&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Rename</a>&nbsp;<a class='opt' href='?act=exec&subact=del&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."' style='color:red;'>Delete</a>&nbsp;<a class='opt' href='?act=exec&subact=copy&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Copy</a>&nbsp;<a class='opt' href='?act=exec&subact=cut&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Cut</a><!--&nbsp;<a class='opt' href='?act=exec&subact=perm&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Permissions</a>-->&nbsp;<a class='opt' href='?act=dirprop&dir=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Properties</a>&nbsp;<a class='opt' href='?act=compress&dir=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Compress</a></td></tr>";
 									$i++;
 								}
 							}
@@ -79,7 +82,7 @@ $GLOBALS['echo'] ="<!doctype html><html><head><meta http-equiv='Content-Type' co
 							foreach($files as $file){
 								if(!is_dir($thisDir.$file)){
 									$mime = explode( '/',@mime_content_type($thisDir.$file));
-									$browsedfiles[] = "<tr class='".($i%2==0?"even":"odd")."'><td><input type='checkbox' name='obj[]' value='".htmlspecialchars($thisDir.$file)."'></td><td><a href='?path=".urlencode($thisDir.$file).'&ref='.urlencode($thisDir)."' title='View this file'>".htmlspecialchars($file)."</a></td><td><span class='opt'>".goodSize(@filesize( $thisDir.$file))."</span></td><td><span class='opt'>".@$mime[0].'/'.@$mime[1]."</span></td><td><a class='opt' href='?act=exec&subact=rename&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Rename</a>&nbsp;<a class='opt' href='?act=exec&subact=del&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."' style='color:red;'>Delete</a>&nbsp;<a class='opt' href='?act=exec&subact=copy&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Copy</a>&nbsp;<a class='opt' href='?act=exec&subact=cut&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Cut</a><!--&nbsp;<a class='opt' href='?act=exec&subact=perm&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Permissions</a>-->&nbsp;<a class='opt' href='?path=".urlencode($thisDir.$file).'&ref='.urlencode($thisDir)."'>Properties</a>&nbsp;<a class='opt' href='?act=download&file=".urlencode($thisDir.$file)."' target='_blank'>Download</a>&nbsp;".( @$mime[0] == 'text'? "<a class='opt' href='?act=edit&file=".urlencode($thisDir.$file)."' target='_blank'>Edit</a>&nbsp;":'' ).( @$mime[1] == 'zip'? "<a class='opt' href='?act=exec&subact=extract&file=".urlencode($thisDir.$file)."&suggestedDest=".urlencode($path)."'>Extract</a>&nbsp;":'' )."</td></tr>\n";
+									$browsedfiles[] = "<tr class='".($i%2==0?"even":"odd")."'><td><input type='checkbox' name='obj[]' value='".htmlspecialchars($thisDir.$file)."'></td><td><a href='?path=".urlencode($thisDir.$file).'&ref='.urlencode($thisDir)."' title='View this file'>".htmlspecialchars($file)."</a></td><td><span class='opt'>".goodSize(@filesize( $thisDir.$file))."</span></td><td><span class='opt'>".@$mime[0].'/'.@$mime[1]."</span></td><td><a class='opt' href='?act=exec&subact=rename&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Rename</a>&nbsp;<a class='opt' href='?act=exec&subact=del&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."' style='color:red;'>Delete</a>&nbsp;<a class='opt' href='?act=exec&subact=copy&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Copy</a>&nbsp;<a class='opt' href='?act=exec&subact=cut&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Cut</a><!--&nbsp;<a class='opt' href='?act=exec&subact=perm&file=".urlencode($thisDir.$file)."&returnto=".urlencode(URL)."'>Permissions</a>-->&nbsp;<a class='opt' href='?path=".urlencode($thisDir.$file).'&ref='.urlencode($thisDir)."'>Properties</a>&nbsp;<a class='opt' href='?act=download&file=".urlencode($thisDir.$file)."' target='_blank'>Download</a>&nbsp;".( @$mime[0] == 'text'? "<a class='opt' href='?act=edit&file=".urlencode($thisDir.$file)."' target='_blank'>Edit</a>&nbsp;":'' ).( @$mime[1] == 'zip'? "<a class='opt' href='?act=exec&subact=extract&file=".urlencode($thisDir.$file)."&suggestedDest=".urlencode($path)."'>Extract</a>&nbsp;":'' )."</td></tr>";
 									$i++;
 								}
 							}
@@ -87,7 +90,7 @@ $GLOBALS['echo'] ="<!doctype html><html><head><meta http-equiv='Content-Type' co
 							$GLOBALS['echo'] .= "<br><form method='post' action='?act=bulk'><input type='hidden' name='thisDir' value='$thisDir'><div class='bulk-operators'><span>Bulk actions: </span><button type='submit' name='act' value='del'>Delete</button>&nbsp;<button type='submit' name='act' value='COPY'>Copy</button>&nbsp;<button type='submit' name='act' value='CUT'>Cut</button><input type='hidden' name='returnto' value='".URL."'>&nbsp;<a href='?act=exec&subact=new&type=dir&to=".urlencode($thisDir)."&returnto=".urlencode(URL)."' class='btn'>New folder</a>&nbsp;<a href='?act=exec&subact=new&type=file&to=".urlencode($thisDir)."&returnto=".urlencode(URL)."' class='btn'>New file</a>&nbsp;<a href='?act=upload&to=".urlencode($thisDir)."' class='btn' target='_blank'>&uarr; Upload</a>&nbsp;";
 							
 							$GLOBALS['echo'] .= "<table class='browser' border='0'>";
-							$GLOBALS['echo'] .= "<tr class='even'><td></td><td><a href='?path=".urlencode($parent).'&ref='.urlencode($path)."'>&uarr; Up...</a></td></tr>\n";
+							$GLOBALS['echo'] .= "<tr class='even'><td></td><td><a href='?path=".urlencode($parent).'&ref='.urlencode($path)."'>&uarr; Up...</a></td></tr>";
 							
 							$GLOBALS['echo'] .= "<tr><td></td><th>Name</th><th>Size</th><th>MIME</th><th>Actions</th></tr>";
 
@@ -100,16 +103,16 @@ $GLOBALS['echo'] ="<!doctype html><html><head><meta http-equiv='Content-Type' co
 								}
 								$GLOBALS['echo'] .= "</form>";
 								
-								$GLOBALS['echo'] .= "</table>\n<p>Directories: $num_of_dir and Files: $num_of_files</p>";
+								$GLOBALS['echo'] .= "</table><p>Directories: $num_of_dir and Files: $num_of_files</p>";
 							}
 							else{
-								$GLOBALS['echo'] .= "</table>\n<p>This folder is empty.</p>";
+								$GLOBALS['echo'] .= "</table><p style='color:red;font-size:25px;'>This folder is empty.</p>";
 							}
 							
 						}
 						else{
 							$mime = explode('/',mime_content_type($path));
-							msg("File Informations",($mime[0] == 'image'?"<img src='?act=download&file=".urlencode($path)."' width='300'>":($mime[0] == 'text'?"<pre style='text-align:left;max-width:500px;max-height:600px;overflow:scroll;background-color:#eee;'>".htmlspecialchars(file_get_contents($path))."</pre>":($mime[0] == 'audio'?"<audio controls><source src='?act=download&file=".urlencode($path)."' type='".$mime[0].'/'.$mime[1]."'><div style='padding:5em;background-color:#f24;color:#fff;font-size:20px;'>Sorry, Your browser doesn't support HTML5 audio player.</div></audio>":($mime[0] == 'video'?"<video controls width='500'><source src='?act=download&file=".urlencode($path)."' type='".$mime[0].'/'.$mime[1]."'><div style='padding:5em;background-color:#f24;color:#fff;font-size:20px;'>Sorry, Your browser doesn't support HTML5 video player.</div></video>":'<div style="padding:5em;background-color:#f24;color:#fff;font-size:20px;">No preview available for this file.</div>') )))."<ul class='browser'><li>Filename: ".htmlspecialchars(basename($path))."</li><li>Location: ".dirname($path)."</li><li>Filesize: ".goodSize(filesize($path))."</li><li>Filetype: ".$mime[0].'/'.$mime[1]."</li><li><a class='btn' href='?act=exec&subact=rename&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Rename</a> <a class='btn' href='?act=exec&subact=del&file=".urlencode($path)."&returnto=".urlencode("?path=".$parent)."' style='color:red;'>Delete</a> <a class='btn' href='?act=exec&subact=copy&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Copy</a> <a class='btn' href='?act=exec&subact=cut&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Cut</a> <a class='btn' href='?act=exec&subact=perm&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Permissions</a> <a class='btn' href='?act=download&file=".urlencode($path)."' target='_blank'>Download</a> ".( @$mime[0] == 'text'? "<a class='btn' href='?act=edit&file=".urlencode($path)."' target='_blank'>Edit</a>":'' )." </li></ul>");
+							msg("File Informations",($mime[0] == 'image'?"<img src='?act=download&file=".urlencode($path)."' width='300'>":($mime[0] == 'text'?"<pre style='text-align:left;max-width:500px;max-height:600px;overflow:scroll;background-color:#eee;'>".htmlspecialchars(file_get_contents($path))."</pre>":($mime[0] == 'audio'?"<audio controls><source src='?act=download&file=".urlencode($path)."' type='".$mime[0].'/'.$mime[1]."'><div style='padding:5em;background-color:#f24;color:#fff;font-size:20px;'>Sorry, Your browser doesn't support HTML5 audio player.</div></audio>":($mime[0] == 'video'?"<video controls width='500'><source src='?act=download&file=".urlencode($path)."' type='".$mime[0].'/'.$mime[1]."'><div style='padding:5em;background-color:#f24;color:#fff;font-size:20px;'>Sorry, Your browser doesn't support HTML5 video player.</div></video>":'<div style="padding:5em;background-color:#f24;color:#fff;font-size:20px;">No preview available for this file.</div>') )))."<ul class='browser'><li>Filename: ".htmlspecialchars(basename($path))."</li><li>Location: ".dirname($path)."</li><li>Filesize: ".goodSize(filesize($path))."</li><li>Filetype: ".$mime[0].'/'.$mime[1]."</li><li><a class='btn' href='?act=exec&subact=rename&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Rename</a> <a class='btn' href='?act=exec&subact=del&file=".urlencode($path)."&returnto=".urlencode("?path=".$parent)."' style='color:red;'>Delete</a> <a class='btn' href='?act=exec&subact=copy&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Copy</a> <a class='btn' href='?act=exec&subact=cut&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Cut</a><!-- <a class='btn' href='?act=exec&subact=perm&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Permissions</a>--> <a class='btn' href='?act=download&file=".urlencode($path)."' target='_blank'>Download</a> ".( @$mime[0] == 'text'? "<a class='btn' href='?act=edit&file=".urlencode($path)."' target='_blank'>Edit</a>":'' )." </li></ul>");
 						}
 					}
 					else{
@@ -138,8 +141,8 @@ $GLOBALS['echo'] ="<!doctype html><html><head><meta http-equiv='Content-Type' co
 							}
 							fclose($fd);
 							exit();
-						}else throwError("File couldn't be downloaded because HostBrowser couldn't open it using <code>fopen()</code> function.");
-					}else throwError("File couldn't be downloaded because either it is invalid or you don't have permission to download this.");
+						}else throwError("File couldn't be downloaded because HostBrowser couldn't open it using PHP's <code><a href='https://www.google.com/search?q=fopen()+in+PHP' target='_blank'>fopen()</a></code> function.");
+					}else throwError("File couldn't be downloaded because either it doesn't exists or you don't have permission to download it.");
 				break;
 				case "upload":
 					if(isset($_FILES['file']) && isset($_GET['confirm'])){
@@ -191,9 +194,9 @@ $GLOBALS['echo'] ="<!doctype html><html><head><meta http-equiv='Content-Type' co
 				case "compress":
 					if(isset($_GET['confirm'])){
 						$dir = isset($_POST['dir'])?$_POST['dir']:null;
-						$res = zip($dir,(isset($_POST['zipname'])?$_POST['zipname']:"New zip").'.zip');
-						if($res == true){
-							msg("Succesfully compressed","The folder ".htmlspecialchars($dir)." was successfully compressed.<br><br><a href='".$_GET['returnto']."' class='btn'>Ok</a>");
+						$res = zip($dir,(isset($_POST['zipname'])?$_POST['zipname']:"New zip").'.zip',dirname($dir));
+						if($res != false){
+							msg("Succesfully compressed","The folder ".htmlspecialchars($dir)." was successfully compressed to <u>".htmlspecialchars(sanitizePath($res))."</u>.<br><br><a href='".$_GET['returnto']."' class='btn'>Ok</a>");
 						}else throwError("Failed!<br><br><a href='javascript:history.go(0)' class='btn'>Try again</a>&nbsp;&nbsp;<a href='".$_GET['returnto']."' class='btn'>Ok</a>");
 					}
 					else{
@@ -411,14 +414,15 @@ $GLOBALS['echo'] ="<!doctype html><html><head><meta http-equiv='Content-Type' co
 				throwError("Login failed due to some internal server problem.");
 			}
 		}
-		else throwError("Login failed because you typed a <b style='color:red;'>wrong</b> password.<br><br><form method='post'><label>Password: <input type='password' name='pwd' autofocus></label><br><br><input type='submit' value='Submit'><input type='hidden' name='returnto' value='".URL."'></form>");
+		else throwError("Login failed because you typed a <b style='color:red;'>wrong</b> password.<br><br><form method='post'><label>Password: <input type='password' name='pwd' autofocus></label><br><br><input type='submit' value='Submit'><input type='hidden' name='returnto' value='".(isset($_POST['returnto'])?$_POST['returnto']:$_SERVER['PHP_SELF']."?path=.")."'></form>");
 	}
 	else{
-		$GLOBALS['echo'] .=	"<center><div class='block' style='width:500px;margin-top:60px;'><div class='block-header'>HostBrowser ".V."</div><div class='block-body'><form method='post'><label>Password: <input type='password' name='pwd' autofocus></label><br><br><input type='submit' value='Submit'><input type='hidden' name='returnto' value='".URL."'></form></div></div></center>";
+		$returnto = substr(URL,0,7)=="http://"?URL:(substr(URL,0,8)=="https://"?URL:(substr(URL,0,3)=="://"?"http".URL:"http://".URL));
+		$GLOBALS['echo'] .=	"<center><div class='block' style='width:500px;margin-top:60px;'><div class='block-header'>HostBrowser ".V."</div><div class='block-body'><form method='post'><label>Password: <input type='password' name='pwd' autofocus></label><br><br><input type='submit' value='Submit'><input type='hidden' name='returnto' value='$returnto'></form></div></div></center>";
 
 	}
 
-$GLOBALS['echo'] .= "<footer><ul class='inline-menu'><li>&copy; <a href='https://twitter.com/SnehanshuPhukon' title='Follow me on Twitter' target='_blank'>@SnehanshuPhukon</a></li><li>|</li><li><a href='http://www.snehanshu.cf/HostBrowser' title='Project Website' target='_blank'>HostBrowser Website</a></li></ul></footer></body></html>";
+$GLOBALS['echo'] .= "<footer><ul class='inline-menu'><li><a href='".$_SERVER['PHP_SELF']."?path=.'>Home</a></li><li>|</li><li><a href='https://twitter.com/SnehanshuPhukon' title='Follow me on Twitter' target='_blank'>@SnehanshuPhukon</a></li><li>|</li><li><a href='https://github.com/SnehanshuPhukon/HostBrowser' title='HostBrowser on GitHub' target='_blank'>GitHub</a></li></ul></footer></body></html>";
 
 echo $GLOBALS['echo'];
 
@@ -541,12 +545,13 @@ function sanitizePath($p){
 }
 
 //ZIP Functions
-function zip($src, $zipname){
+function zip($src, $zipname, $dest = ''){
+	$dest .= '/';
 	$z = new recurseZip;
-	$newzip = $z->compress($src);
+	$newzip = $z->compress($src, $dest);
 	if($newzip != false){
-		rename($newzip, $zipname);
-		return true;
+		rename($newzip, $dest.$zipname);
+		return $dest.$zipname;
 	}else return false;
 }
 class recurseZip
@@ -591,4 +596,7 @@ public function compress($src,$dst='')
         return $dst;
 }
 }
+/*
+                                                MADE IN INDIA
+*/
 ?>
