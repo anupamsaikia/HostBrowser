@@ -30,7 +30,8 @@ $pastebtn = false;
 $GLOBALS['echo'] = "<!--\nHostBrowser v".V." by Snehanshu Phukon
 Email: snehanshu.glt@gmail.com
 Twitter: https://twitter.com/SnehanshuPhukon
-GitHub: https://github.com/SnehanshuPhukon/HostBrowser\n-->\n";
+GitHub: https://github.com/SnehanshuPhukon/HostBrowser
+MADE IN INDIA\n-->\n";
 
 $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'><title>HostBrowser - A non-FTP Webhost Filemanager</title><style>body{font-family:arial;margin:0px;background-color:#E0EBF6;height:100%}a{color:#06F;text-decoration:none}a:hover{text-decoration:underline}input,select,textarea,button,.btn{border-radius:5px;background-color:#EAEAEA;border:solid 1px #03F;padding:3px;color:#000}input:hover,select:hover,textarea:hover,button:hover,.btn:hover{background-color:#C8C8C8;text-decoration:none}input:focus,textarea:focus{background-color:#555;color:#FFF;border:dashed 1px #fff;}footer{bottom:0px;width:95%;clear:both;overflow:hidden;background-color:#F3CECE;padding:7px;text-align:center;margin-top:50px;margin-left:0px;border-top:solid 1px #03F}.inline-menu{list-style-type:none}.inline-menu>li{display:inline-block;margin-left:4px}.block{background-color:#FFF;border:solid 1px #03F;border-radius:3px;margin-top:10px}.block-header{font-size:24px;font-weight:bold;padding:3px;background-color:#F3CECE}.block-body{padding:10px;background:transparent}.opt{font-size:12px;padding:0px;margin:0px}.main{padding:5px}.overview{width:100%;height:75%;float:left;clear:left;background-color:#E0EBF6;border:solid 1px #03F}.addr_bar{width:80%}.addr_bar>form>input{width:80%;padding:5px}.browser{list-style-type:none}.browser>li{padding:4px}.odd{background-color:#FFF}.even{}.even:hover,.odd:hover{background-color:#D9D9D9}</style></head><body>";
 
