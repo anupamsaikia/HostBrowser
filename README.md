@@ -12,3 +12,6 @@ No installation required.
 Note: Change the password immediately. You will have to edit the source.
   Find something like $conf['password'] and change the password there.
   You could have done this from HostBrowser itself!.
+  
+  
+  Love you developers.
