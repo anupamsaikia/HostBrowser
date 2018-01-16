@@ -1,37 +1,28 @@
 <?php
 /*
-HostBrowser v1.0.0 by Snehanshu Phukon
-Email: snehanshu.glt@gmail.com
-Twitter: https://twitter.com/SnehanshuPhukon
-GitHub: https://github.com/SnehanshuPhukon/HostBrowser
+HostBrowser v2.0.0
+Developers: Snehanshu Phukon[snehanshu.glt@gmail.com], Anupam Saikia[ianupamsaikia@gmail.com]
+GitHub: https://github.com/anupamsaikia/HostBrowser
 
 Note:   This software is released under GNU GPL liscence.
         Therefore any one can use it, distribute, sell 
         or modify without any permission from the author.
-
-////////////////////////////////////////////////////////////
-CONFIGURATIONS START
 */
+
+//CONFIGURATIONS START
 $conf = array();//This array will contain all the settings
-
-$conf['password'] = "browse";//This is the password you'll need
-			     //to protect your private files from public.
-/*
-CONFIGURATIONS END
-*/
-////DO NOT MODIFY BELOW THIS LINE (IF YOU ARE NOT A PROGRAMMER)
-///////////////////////////////////////////////////////////////
+$conf['password'] = "hbx";//This is the password for login
+//CONFIGURATIONS END
 
 session_start();
-const V = '1.0.0';
+const V = '2.0.0';
 define('URL', $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI']);
 ignore_user_abort(true);
 $pastebtn = false;
-$GLOBALS['echo'] = "<!--\nHostBrowser v".V." by Snehanshu Phukon
-Email: snehanshu.glt@gmail.com
-Twitter: https://twitter.com/SnehanshuPhukon
-GitHub: https://github.com/SnehanshuPhukon/HostBrowser
-MADE IN INDIA\n-->\n";
+$GLOBALS['echo'] = "<!--\nHostBrowser v".V."\n
+Developers: Snehanshu Phukon[snehanshu.glt@gmail.com], Anupam Saikia[ianupamsaikia@gmail.com]\n
+GitHub: https://github.com/anupamsaikia/HostBrowser\n
+MADE WITH LOVE IN INDIA\n-->\n";
 
 $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'><title>HostBrowser - A non-FTP Webhost Filemanager</title><style>body{font-family:arial;margin:0px;background-color:#E0EBF6;height:100%}a{color:#06F;text-decoration:none}a:hover{text-decoration:underline}input,select,textarea,button,.btn{border-radius:5px;background-color:#EAEAEA;border:solid 1px #03F;padding:3px;color:#000}input:hover,select:hover,textarea:hover,button:hover,.btn:hover{background-color:#C8C8C8;text-decoration:none}input:focus,textarea:focus{background-color:#555;color:#FFF;border:dashed 1px #fff;}footer{bottom:0px;width:95%;clear:both;overflow:hidden;background-color:#F3CECE;padding:7px;text-align:center;margin-top:50px;margin-left:0px;border-top:solid 1px #03F}.inline-menu{list-style-type:none}.inline-menu>li{display:inline-block;margin-left:4px}.block{background-color:#FFF;border:solid 1px #03F;border-radius:3px;margin-top:10px}.block-header{font-size:24px;font-weight:bold;padding:3px;background-color:#F3CECE}.block-body{padding:10px;background:transparent}.opt{font-size:12px;padding:0px;margin:0px}.main{padding:5px}.overview{width:100%;height:75%;float:left;clear:left;background-color:#E0EBF6;border:solid 1px #03F}.addr_bar{width:80%}.addr_bar>form>input{width:80%;padding:5px}.browser{list-style-type:none}.browser>li{padding:4px}.odd{background-color:#FFF}.even{}.even:hover,.odd:hover{background-color:#D9D9D9}</style></head><body>";
 
@@ -378,17 +369,23 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 							else $saveOk = false;
 						}else $saveOk = false;
 						
-						$GLOBALS['echo'] .= "<form method='post' action='?act=edit&file=".urlencode($file)."'><div class='block'><div class='block-header'>Editing <u>".htmlspecialchars($file)."</u><span style='float:right;margin:3px;'>".($saveOk?"Saved":"Not saved")."</span><button type='submit' style='font-size:20px;float:right;'>Save</button></div>";
-						$mime = explode( '/',@mime_content_type($file));
-						if($mime[0] == "text"){
-							$content = htmlspecialchars(file_get_contents($file));
-							$GLOBALS['echo'] .= "<div class='block-body'><textarea autofocus name='content' style='width:100%;height:500px;font-size:20px;'>$content</textarea></div></div></form>";
+						if($_COOKIE['editor']){
+
+						}
+						else{
+							$GLOBALS['echo'] .= "<form method='post' action='?act=edit&file=".urlencode($file)."'><div class='block'><div class='block-header'>Editing <u>".htmlspecialchars($file)."</u><span style='float:right;margin:3px;'>".($saveOk?"Saved":"Not saved")."</span><button type='submit' style='font-size:20px;float:right;'>Save</button></div>";
+							$mime = explode( '/',@mime_content_type($file));
+							if($mime[0] == "text"){
+								$content = htmlspecialchars(file_get_contents($file));
+								$GLOBALS['echo'] .= "<div class='block-body'><textarea autofocus name='content' style='width:100%;height:500px;font-size:20px;'>$content</textarea></div></div></form>";
+							}
 						}
 					}
 				break;
 				case "logout":
 					unlink("hb_session.conf.php");
 					setcookie("hb_session","",(time()-3600));
+					setcookie("editor","",(time()-3600));
 					header('location:'.$_SERVER['PHP_SELF']);
 					exit();
 				break;
@@ -399,13 +396,21 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 		http_response_code(200);
 		if($_POST['pwd'] == $conf['password']){
 			$session_cookie = mt_rand(10000,99999);
+			if (isset($_POST['editor'])){
+                $editor = 1;
+            }
+            else{
+                $editor = 0;
+            }
 			if(file_exists("hb_session.conf.php")){
 				require_once("hb_session.conf.php");
 				if(!empty(COOKIE)) $session_cookie = COOKIE;
+				if(!empty(EDITOR)) $editor = EDITOR;
 			}
 			$sfile = fopen('hb_session.conf.php','w');
-			if( fwrite($sfile, "<?php\n/*\nThis is a temporary data file used by HostBrowser.\nDeleting or modifiying this will log you out from HostBrowser.\n*/\nconst COOKIE = '".$session_cookie."';\n?>")){
+			if( fwrite($sfile, "<?php\n/*\nThis is a temporary data file used by HostBrowser.\nDeleting or modifiying this will log you out from HostBrowser.\n*/\nconst COOKIE = '".$session_cookie."';\nconst EDITOR = '".$editor."';?>")){
 				setcookie('hb_session', $session_cookie, time()+2592000);
+				setcookie('editor', $editor, time()+2592000);
 				$time = time();
 				while(time()-$time == 2){}
 				header('location: '.(isset($_POST['returnto'])?$_POST['returnto']:$_SERVER['PHP_SELF']));
@@ -419,7 +424,7 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 	}
 	else{
 		$returnto = substr(URL,0,7)=="http://"?URL:(substr(URL,0,8)=="https://"?URL:(substr(URL,0,3)=="://"?"http".URL:"http://".URL));
-		$GLOBALS['echo'] .=	"<center><div class='block' style='width:500px;margin-top:60px;'><div class='block-header'>HostBrowser ".V."</div><div class='block-body'><form method='post'><label>Password: <input type='password' name='pwd' autofocus></label><br><br><input type='submit' value='Submit'><input type='hidden' name='returnto' value='$returnto'></form></div></div></center>";
+		$GLOBALS['echo'] .=	"<center><div class='block' style='width:500px;margin-top:60px;'><div class='block-header'>HostBrowser ".V."</div><div class='block-body'><form method='post'><label>Password: <input type='password' name='pwd' autofocus></label><br><br><label><input type='checkbox' name='editor' value='true'>Use Dev Text Editor <font size='2'>(network needed)</font></label><br><br><input type='submit' value='Submit'><input type='hidden' name='returnto' value='$returnto'></form></div></div></center>";
 
 	}
 
