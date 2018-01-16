@@ -373,184 +373,227 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 							$url = basename(__FILE__).'?act=edit&file='.urlencode($file);
 							$name = htmlspecialchars($file);
 							$content = htmlspecialchars(file_get_contents($file));
-
+							$ext = pathinfo($file, PATHINFO_EXTENSION);
+							
 
 							echo "
 <style type='text/css' media='screen'>
-    .ace_editor {
-        position: relative !important;
-        border: 1px solid lightgray;
-        margin: auto;
-        height: 500px;
-        width: 90%;
-    }
-    .ace_editor.fullScreen {
-        height: auto;
-        width: auto;
-        border: 0;
-        margin: 0;
-        position: fixed !important;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
-    }
-    .fullScreen {
-        overflow: hidden
-    }
-    body{
-        padding: 0px;
-        margin: 0px;
-        overflow: hidden;
-    }
-    #editor{
-        margin: auto;
-        position: absolute;
-        top: 30px;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
-    * {
-    box-sizing: border-box;
-    }
-    .info{
-        overflow: hidden;
-        text-align: center;
-        padding-left: 10px;
-        line-height: 30px;
-        height:30px;
-        color:#555;
-        font-family: monospace;
-        display: inline-block;
-    }
-    .info:hover{
-        background-color: #ddd;
-    }
-    .file{
-        width:30%;
-        border-bottom:1px solid #bbb;
-    }
-    .mode{
-        width: 10%;
-        border-left:1px solid #bbb;
-        border-bottom:1px solid #bbb;
-    }
-    .save{
-        border-left:1px solid #bbb;
-        border-bottom:1px solid #bbb;
-        width:10%;
-    }
-    .save:hover{
-        cursor: pointer;
-    }
-    .shortcuts{
-        border-left:1px solid #bbb;
-        border-bottom:1px solid #bbb;
-        width:50%;   
-    }
-    @media only screen and (max-width:830px) {
-      .file, .shortcuts, .mode{
-        display: none;
-      }
-      .save{
-          width: 100%;
-      }
-    }
-    </style>
-    <div style='background-color:#eee;'><div class='info file'>$name</div><div class='info mode' id='mode'>html</div><div class='info shortcuts'>Save: <strong>Ctrl+S</strong> Settings: <strong>Ctrl+Q</strong> View Shortcuts: <strong>Ctrl+Alt+H</strong></div><div class='info save' onclick='save()'><strong>Save</strong></div></div>
-    
-    <pre id='editor'>$content</pre>
-    
-    <script src='//ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js'></script>
-    <script src='//ajaxorg.github.io/ace-builds/src-min-noconflict/ext-language_tools.js'></script>
-    <script src='//ajaxorg.github.io/ace-builds/src-min-noconflict/ext-settings_menu.js'></script>
-    
-    <script>
-        var editor = ace.edit('editor');
-        var dom = ace.require('ace/lib/dom');
-        ace.require('ace/ext/language_tools');
-        ace.require('ace/ext/settings_menu').init(editor);
-    
-        editor.session.setMode('ace/mode/html');
-        editor.setTheme('ace/theme/chrome');
-        editor.setAutoScrollEditorIntoView(true);
-        editor.setShowPrintMargin(false);
-        editor.\$blockScrolling = Infinity;
-        //editor.setValue('');
-    
-        var fullScreen = dom.toggleCssClass(document.body, 'fullScreen')
-        dom.setCssClass(editor.container, 'fullScreen', fullScreen)
-        editor.setAutoScrollEditorIntoView(!fullScreen)
-        editor.resize()
-    
-        editor.setOptions({
-            enableBasicAutocompletion: true,
-            enableSnippets: true,
-            enableLiveAutocompletion: false
-        });
-     
-        editor.commands.addCommands([{
-            name: 'showSettingsMenu',
-            bindKey: {win: 'Ctrl-q', mac: 'Command-q'},
-            exec: function(editor) {
-                editor.showSettingsMenu();
-            },
-            readOnly: true
-        }]);
-        editor.commands.addCommands([{
-            name: 'save',
-            bindKey: {win: 'Ctrl-s', mac: 'Command-s'},
-            exec: function(editor) {
-                save();
-            },
-            readOnly: true
-        }]);
-        editor.commands.addCommand({
-            name: 'showKeyboardShortcuts',
-            bindKey: {win: 'Ctrl-Alt-h', mac: 'Command-Alt-h'},
-            exec: function(editor) {
-                ace.config.loadModule('ace/ext/keybinding_menu', function(module) {
-                    module.init(editor);
-                    editor.showKeyboardShortcuts()
-                })
-            }
-        })
-    
-        editor.session.on('changeMode', function(){
-            mode = editor.session.\$modeId;
-            mode = mode.substr(mode.lastIndexOf('/') + 1);
-            //alert(mode);
-            document.getElementById('mode').innerHTML = mode;
-        })
-    
-        function save(){
-			content = editor.getValue();
-			content = encodeURIComponent(content);
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-              if(this.readyState == 1){
-                //document.getElementById('response').innerHTML = 'server connection established';
-              }
-              if(this.readyState == 2){
-                //document.getElementById('response').innerHTML = 'request received';
-              }
-              if(this.readyState == 3){
-                //document.getElementById('response').innerHTML = 'processing request';
-              }
-              if (this.readyState == 4 && this.status == 200) {
-				//document.getElementById('response').innerHTML = this.responseText;
-				alert('done');
-              }
-            };
-            //xhttp.open('POST', '<?php echo basename(__FILE__);?>', true);
-            xhttp.open('POST', '$url', true);
-            xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhttp.send('content=' + content);
-        }
-    </script>
-";
+.ace_editor {
+	position: relative !important;
+	border: 1px solid lightgray;
+	margin: auto;
+	height: 500px;
+	width: 90%;
+}
+.ace_editor.fullScreen {
+	height: auto;
+	width: auto;
+	border: 0;
+	margin: 0;
+	position: fixed !important;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+}
+.fullScreen {
+	overflow: hidden
+}
+body{
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+}
+#editor{
+	margin: auto;
+	position: absolute;
+	top: 30px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+* {
+box-sizing: border-box;
+}
+.info{
+	overflow: hidden;
+	text-align: center;
+	padding-left: 10px;
+	line-height: 30px;
+	height:30px;
+	color:#555;
+	font-family: monospace;
+	display: inline-block;
+}
+.info:hover{
+	background-color: #ddd;
+}
+.file{
+	width:30%;
+	border-bottom:1px solid #bbb;
+}
+.mode{
+	width: 10%;
+	border-left:1px solid #bbb;
+	border-bottom:1px solid #bbb;
+}
+.save{
+	border-left:1px solid #bbb;
+	border-bottom:1px solid #bbb;
+	width:10%;
+}
+.save:hover{
+	cursor: pointer;
+}
+.shortcuts{
+	border-left:1px solid #bbb;
+	border-bottom:1px solid #bbb;
+	width:50%;   
+}
+@media only screen and (max-width:830px) {
+	.file, .shortcuts, .mode{
+		display: none;
+	}
+	.save{
+		width: 100%;
+	}
+}
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #009688;
+    color: #fff;
+    text-align: center;
+    border-radius: 20px;
+    padding: 5px;
+    position: fixed;
+    z-index: 50;
+    left: 50%;
+    bottom: 30px;
+}
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 0.5s;
+    animation: fadein 0.5s, fadeout 0.5s 0.5s;
+}
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+</style>
+<div style='background-color:#eee;'><div class='info file'>$name</div><div class='info mode' id='mode'>text</div><div class='info shortcuts'>Save: <strong>Ctrl+S</strong> Settings: <strong>Ctrl+Q</strong> View Shortcuts: <strong>Ctrl+Alt+H</strong></div><div class='info save' onclick='save()'><strong>Save</strong></div></div>
+
+<pre id='editor'>$content</pre>
+<div id='snackbar'>Saved Successfully</div>
+
+<script src='//ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js'></script>
+<script src='//ajaxorg.github.io/ace-builds/src-min-noconflict/ext-language_tools.js'></script>
+<script src='//ajaxorg.github.io/ace-builds/src-min-noconflict/ext-settings_menu.js'></script>
+
+<script>
+	var editor = ace.edit('editor');
+	var dom = ace.require('ace/lib/dom');
+	ace.require('ace/ext/language_tools');
+	ace.require('ace/ext/settings_menu').init(editor);
+
+	ext = '$ext';
+	mode = 'text';
+	switch(ext){
+		case 'html' : mode='html';break;
+		case 'php' : mode='php';break;
+		case 'css' : mode='css';break;
+		case 'js' : mode='javascript';break;
+		case 'md' : mode='markdown';break;
+		case 'xml' : mode='xml';break;
+		default : mode='text';break;
+	}
+	editor.session.setMode('ace/mode/'+mode);
+	editor.setTheme('ace/theme/chrome');
+	editor.setAutoScrollEditorIntoView(true);
+	editor.setShowPrintMargin(false);
+	editor.\$blockScrolling = Infinity;
+	//editor.setValue('');
+
+	var fullScreen = dom.toggleCssClass(document.body, 'fullScreen')
+	dom.setCssClass(editor.container, 'fullScreen', fullScreen)
+	editor.setAutoScrollEditorIntoView(!fullScreen)
+	editor.resize()
+
+	editor.setOptions({
+		enableBasicAutocompletion: true,
+		enableSnippets: true,
+		enableLiveAutocompletion: false
+	});
+
+	editor.commands.addCommands([{
+		name: 'showSettingsMenu',
+		bindKey: {win: 'Ctrl-q', mac: 'Command-q'},
+		exec: function(editor) {
+			editor.showSettingsMenu();
+		},
+		readOnly: true
+	}]);
+	editor.commands.addCommands([{
+		name: 'save',
+		bindKey: {win: 'Ctrl-s', mac: 'Command-s'},
+		exec: function(editor) {
+			save();
+		},
+		readOnly: true
+	}]);
+	editor.commands.addCommand({
+		name: 'showKeyboardShortcuts',
+		bindKey: {win: 'Ctrl-Alt-h', mac: 'Command-Alt-h'},
+		exec: function(editor) {
+			ace.config.loadModule('ace/ext/keybinding_menu', function(module) {
+				module.init(editor);
+				editor.showKeyboardShortcuts()
+			})
+		}
+	})
+
+	editor.session.on('changeMode', function(){
+		mode = editor.session.\$modeId;
+		mode = mode.substr(mode.lastIndexOf('/') + 1);
+		//alert(mode);
+		document.getElementById('mode').innerHTML = mode;
+	})
+
+	function save(){
+		content = editor.getValue();
+		content = encodeURIComponent(content);
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200){
+				toast();
+			}
+		};
+		//xhttp.open('POST', '<?php echo basename(__FILE__);?>', true);
+		xhttp.open('POST', '$url', true);
+		xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhttp.send('content=' + content);
+	}
+	function toast() {
+		var x = document.getElementById('snackbar');
+		x.className = 'show';
+		setTimeout(function(){ x.className = x.className.replace('show', ''); }, 1000);
+	}
+</script>
+							";
 
 						}
 						else{
@@ -741,49 +784,44 @@ function zip($src, $zipname, $dest = ''){
 		return $dest.$zipname;
 	}else return false;
 }
-class recurseZip
-{
-private function recurse_zip($src,&$zip,$path) {
-        $dir = opendir($src);
-        while(false !== ( $file = readdir($dir)) ) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir($src . '/' . $file) ) {
-                    $this->recurse_zip($src . '/' . $file,$zip,$path);
-                }
-                else {
-                    $zip->addFile($src . '/' . $file,substr($src . '/' . $file,$path));
-                }
-            }
-        }
-        closedir($dir);
-}
+class recurseZip{
+	private function recurse_zip($src,&$zip,$path){
+		$dir = opendir($src);
+		while(false !== ( $file = readdir($dir)) ) {
+			if (( $file != '.' ) && ( $file != '..' )) {
+				if ( is_dir($src . '/' . $file) ) {
+					$this->recurse_zip($src . '/' . $file,$zip,$path);
+				}
+				else {
+					$zip->addFile($src . '/' . $file,substr($src . '/' . $file,$path));
+				}
+			}
+		}
+		closedir($dir);
+	}
 
-public function compress($src,$dst='')
-{
+	public function compress($src,$dst=''){
 		if(substr($src,-1)==='/'){$src=substr($src,0,-1);}
 		if(substr($dst,-1)==='/'){$dst=substr($dst,0,-1);}
-        $path=strlen(dirname($src).'/');
-        $filename=substr($src,strrpos($src,'/')+1).'.zip';
+		$path=strlen(dirname($src).'/');
+		$filename=substr($src,strrpos($src,'/')+1).'.zip';
 		$dst=empty($dst)? $filename : $dst.'/'.$filename;
 		@unlink($dst);
-        $zip = new ZipArchive;
-        $res = $zip->open($dst, ZipArchive::CREATE);
-        if($res !== TRUE){
-                echo 'Error: Unable to create zip file';
-                exit;}
-        if(is_file($src)){$zip->addFile($src,substr($src,$path));}
-        else{
-                if(!is_dir($src)){
-                     $zip->close();
-                     @unlink($dst);
-                     echo 'Error: File not found';
-                     exit;}
-        $this->recurse_zip($src,$zip,$path);}
-        $zip->close();
-        return $dst;
+		$zip = new ZipArchive;
+		$res = $zip->open($dst, ZipArchive::CREATE);
+		if($res !== TRUE){
+				echo 'Error: Unable to create zip file';
+				exit;}
+		if(is_file($src)){$zip->addFile($src,substr($src,$path));}
+		else{
+				if(!is_dir($src)){
+						$zip->close();
+						@unlink($dst);
+						echo 'Error: File not found';
+						exit;}
+		$this->recurse_zip($src,$zip,$path);}
+		$zip->close();
+		return $dst;
+	}
 }
-}
-/*
-                                                MADE IN INDIA
-*/
 ?>
