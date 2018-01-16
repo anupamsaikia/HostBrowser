@@ -526,7 +526,8 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
         })
     
         function save(){
-            content = editor.getValue();
+			content = editor.getValue();
+			content = encodeURIComponent(content);
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
               if(this.readyState == 1){
@@ -539,14 +540,14 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
                 //document.getElementById('response').innerHTML = 'processing request';
               }
               if (this.readyState == 4 && this.status == 200) {
-                //document.getElementById('response').innerHTML = this.responseText;
+				//document.getElementById('response').innerHTML = this.responseText;
+				alert('done');
               }
             };
             //xhttp.open('POST', '<?php echo basename(__FILE__);?>', true);
             xhttp.open('POST', '$url', true);
             xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xhttp.send('content=' + content);
-            alert(editor.getValue());
         }
     </script>
 ";
