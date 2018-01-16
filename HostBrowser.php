@@ -370,6 +370,186 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 						}else $saveOk = false;
 						
 						if($_COOKIE['editor']){
+							$url = basename(__FILE__).'?act=edit&file='.urlencode($file);
+							$name = htmlspecialchars($file);
+							$content = htmlspecialchars(file_get_contents($file));
+
+
+							echo "
+<style type='text/css' media='screen'>
+    .ace_editor {
+        position: relative !important;
+        border: 1px solid lightgray;
+        margin: auto;
+        height: 500px;
+        width: 90%;
+    }
+    .ace_editor.fullScreen {
+        height: auto;
+        width: auto;
+        border: 0;
+        margin: 0;
+        position: fixed !important;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+    }
+    .fullScreen {
+        overflow: hidden
+    }
+    body{
+        padding: 0px;
+        margin: 0px;
+        overflow: hidden;
+    }
+    #editor{
+        margin: auto;
+        position: absolute;
+        top: 30px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+    * {
+    box-sizing: border-box;
+    }
+    .info{
+        overflow: hidden;
+        text-align: center;
+        padding-left: 10px;
+        line-height: 30px;
+        height:30px;
+        color:#555;
+        font-family: monospace;
+        display: inline-block;
+    }
+    .info:hover{
+        background-color: #ddd;
+    }
+    .file{
+        width:30%;
+        border-bottom:1px solid #bbb;
+    }
+    .mode{
+        width: 10%;
+        border-left:1px solid #bbb;
+        border-bottom:1px solid #bbb;
+    }
+    .save{
+        border-left:1px solid #bbb;
+        border-bottom:1px solid #bbb;
+        width:10%;
+    }
+    .save:hover{
+        cursor: pointer;
+    }
+    .shortcuts{
+        border-left:1px solid #bbb;
+        border-bottom:1px solid #bbb;
+        width:50%;   
+    }
+    @media only screen and (max-width:830px) {
+      .file, .shortcuts, .mode{
+        display: none;
+      }
+      .save{
+          width: 100%;
+      }
+    }
+    </style>
+    <div style='background-color:#eee;'><div class='info file'>$name</div><div class='info mode' id='mode'>html</div><div class='info shortcuts'>Save: <strong>Ctrl+S</strong> Settings: <strong>Ctrl+Q</strong> View Shortcuts: <strong>Ctrl+Alt+H</strong></div><div class='info save' onclick='save()'><strong>Save</strong></div></div>
+    
+    <pre id='editor'>$content</pre>
+    
+    <script src='//ajaxorg.github.io/ace-builds/src-min-noconflict/ace.js'></script>
+    <script src='//ajaxorg.github.io/ace-builds/src-min-noconflict/ext-language_tools.js'></script>
+    <script src='//ajaxorg.github.io/ace-builds/src-min-noconflict/ext-settings_menu.js'></script>
+    
+    <script>
+        var editor = ace.edit('editor');
+        var dom = ace.require('ace/lib/dom');
+        ace.require('ace/ext/language_tools');
+        ace.require('ace/ext/settings_menu').init(editor);
+    
+        editor.session.setMode('ace/mode/html');
+        editor.setTheme('ace/theme/chrome');
+        editor.setAutoScrollEditorIntoView(true);
+        editor.setShowPrintMargin(false);
+        editor.\$blockScrolling = Infinity;
+        //editor.setValue('');
+    
+        var fullScreen = dom.toggleCssClass(document.body, 'fullScreen')
+        dom.setCssClass(editor.container, 'fullScreen', fullScreen)
+        editor.setAutoScrollEditorIntoView(!fullScreen)
+        editor.resize()
+    
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: false
+        });
+     
+        editor.commands.addCommands([{
+            name: 'showSettingsMenu',
+            bindKey: {win: 'Ctrl-q', mac: 'Command-q'},
+            exec: function(editor) {
+                editor.showSettingsMenu();
+            },
+            readOnly: true
+        }]);
+        editor.commands.addCommands([{
+            name: 'save',
+            bindKey: {win: 'Ctrl-s', mac: 'Command-s'},
+            exec: function(editor) {
+                save();
+            },
+            readOnly: true
+        }]);
+        editor.commands.addCommand({
+            name: 'showKeyboardShortcuts',
+            bindKey: {win: 'Ctrl-Alt-h', mac: 'Command-Alt-h'},
+            exec: function(editor) {
+                ace.config.loadModule('ace/ext/keybinding_menu', function(module) {
+                    module.init(editor);
+                    editor.showKeyboardShortcuts()
+                })
+            }
+        })
+    
+        editor.session.on('changeMode', function(){
+            mode = editor.session.\$modeId;
+            mode = mode.substr(mode.lastIndexOf('/') + 1);
+            //alert(mode);
+            document.getElementById('mode').innerHTML = mode;
+        })
+    
+        function save(){
+            content = editor.getValue();
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+              if(this.readyState == 1){
+                //document.getElementById('response').innerHTML = 'server connection established';
+              }
+              if(this.readyState == 2){
+                //document.getElementById('response').innerHTML = 'request received';
+              }
+              if(this.readyState == 3){
+                //document.getElementById('response').innerHTML = 'processing request';
+              }
+              if (this.readyState == 4 && this.status == 200) {
+                //document.getElementById('response').innerHTML = this.responseText;
+              }
+            };
+            //xhttp.open('POST', '<?php echo basename(__FILE__);?>', true);
+            xhttp.open('POST', '$url', true);
+            xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhttp.send('content=' + content);
+            alert(editor.getValue());
+        }
+    </script>
+";
 
 						}
 						else{
