@@ -565,7 +565,16 @@ box-sizing: border-box;
 			})
 		}
 	})
-
+	editor.commands.addCommand({
+		name: 'toggleWordWrap',
+		bindKey: {win: 'Alt-z', mac: 'Alt-z'},
+		exec: function(editor) {
+			if(editor.session.getUseWrapMode())
+				editor.getSession().setUseWrapMode(false);
+			else
+				editor.getSession().setUseWrapMode(true);
+		}
+	})
 	editor.session.on('changeMode', function(){
 		mode = editor.session.\$modeId;
 		mode = mode.substr(mode.lastIndexOf('/') + 1);
