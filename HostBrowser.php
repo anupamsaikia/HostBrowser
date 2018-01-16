@@ -782,7 +782,6 @@ function sanitizePath($p){
 	$p = preg_replace("/[.]{3,}+\//","..",$p);
 	return $p;
 }
-
 //ZIP Functions
 function zip($src, $zipname, $dest = ''){
 	$dest .= '/';
@@ -819,16 +818,19 @@ class recurseZip{
 		$zip = new ZipArchive;
 		$res = $zip->open($dst, ZipArchive::CREATE);
 		if($res !== TRUE){
-				echo 'Error: Unable to create zip file';
-				exit;}
+			echo 'Error: Unable to create zip file';
+			exit;
+		}
 		if(is_file($src)){$zip->addFile($src,substr($src,$path));}
 		else{
-				if(!is_dir($src)){
-						$zip->close();
-						@unlink($dst);
-						echo 'Error: File not found';
-						exit;}
-		$this->recurse_zip($src,$zip,$path);}
+			if(!is_dir($src)){
+				$zip->close();
+				@unlink($dst);
+				echo 'Error: File not found';
+				exit;
+			}
+			$this->recurse_zip($src,$zip,$path);
+		}
 		$zip->close();
 		return $dst;
 	}
