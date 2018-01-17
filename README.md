@@ -6,13 +6,12 @@ It is easily browsable and secure.
 # Installation
 No installation required.
 * Just place the HostBrowser.php file in a web accesible directory of your webhost (generally htdocs, www or public_html).
-* After that visit the file from your browser http://www.example.com/path/to/HostBrowser.php. Obviously path/to/ is the location of the file.
+* After that visit the file from your browser `www.example.com/path/to/HostBrowser.php`. Obviously path/to/ is the location of the file.
 * After that enter the password. Default password is `hbx`
 * The checkbox allows you to choose between a Basic and Advanced TextEditor _(Internet connection is required)_.
-- [ ] Advanced TextEditor
-* Enjoy and be productive :+1:
+- [x] Advanced TextEditor
 
-> Note: Change the password immediately. You will have to edit the sourcecode.
-> See Line number 14
-  
-With lots of :heart:
+
+
+
+> Note: Change the password immediately. You will have to edit the sourcecode. See Line number 14

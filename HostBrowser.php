@@ -677,11 +677,11 @@ box-sizing: border-box;
 	}
 	else{
 		$returnto = substr(URL,0,7)=="http://"?URL:(substr(URL,0,8)=="https://"?URL:(substr(URL,0,3)=="://"?"http".URL:"http://".URL));
-		$GLOBALS['echo'] .=	"<center><div class='block' style='width:500px;margin-top:60px;'><div class='block-header'>HostBrowser ".V."</div><div class='block-body'><form method='post'><label>Password: <input type='password' name='pwd' autofocus></label><br><br><label><input type='checkbox' name='editor' value='true'>Use Dev Text Editor <font size='2'>(network needed)</font></label><br><br><input type='submit' value='Submit'><input type='hidden' name='returnto' value='$returnto'></form></div></div></center>";
+		$GLOBALS['echo'] .=	"<center><div class='block' style='width:500px;margin-top:60px;'><div class='block-header'>HostBrowser ".V."</div><div class='block-body'><form method='post'><label>Password: <input type='password' name='pwd' autofocus></label><br><br><label><input type='checkbox' name='editor' value='true'> Advanced TextEditor <font size='2'>(network needed)</font></label><br><br><input type='submit' value='Submit'><input type='hidden' name='returnto' value='$returnto'></form></div></div></center>";
 
 	}
 
-    $GLOBALS['echo'] .= "<footer><ul class='inline-menu'><li><a href='".$_SERVER['PHP_SELF']."?path=.'>Home</a></li><li>|</li><li><a href='https://twitter.com/SnehanshuPhukon' title='Follow me on Twitter' target='_blank'>@SnehanshuPhukon</a></li><li>|</li><li><a href='https://github.com/SnehanshuPhukon/HostBrowser' title='HostBrowser on GitHub' target='_blank'>GitHub</a></li><li>|</li><li>Page generated in ".(time()-$start_time)." sec</li></ul></footer></body></html>";
+    $GLOBALS['echo'] .= "<footer><ul class='inline-menu'><li><a href='".$_SERVER['PHP_SELF']."?path=.'>Home</a></li><li>|</li><li><a href='https://twitter.com/SnehanshuPhukon' title='Follow me on Twitter' target='_blank'>@SnehanshuPhukon</a></li><li>|</li><li><a href='https://twitter.com/iAnupamSaikia' title='Follow me on Twitter' target='_blank'>@iAnupamSaikia</a></li><li>|</li><li><a href='https://github.com/SnehanshuPhukon/HostBrowser' title='HostBrowser on GitHub' target='_blank'>GitHub</a></li><li>|</li><li>Page generated in ".(time()-$start_time)." sec</li></ul></footer></body></html>";
 
 echo $GLOBALS['echo'];
 
