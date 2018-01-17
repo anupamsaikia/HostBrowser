@@ -2,7 +2,7 @@
 /*
 HostBrowser v2.0.0
 Developers: Snehanshu Phukon[snehanshu.glt@gmail.com], Anupam Saikia[ianupamsaikia@gmail.com]
-GitHub: https://github.com/anupamsaikia/HostBrowser
+GitHub: https://github.com/SnehanshuPhukon/HostBrowser
 
 Note:   This software is released under GNU GPL liscence.
         Therefore any one can use it, distribute, sell 
@@ -15,16 +15,17 @@ $conf['password'] = "hbx";//This is the password for login
 //CONFIGURATIONS END
 
 session_start();
+$start_time = time();
 const V = '2.0.0';
 define('URL', $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI']);
 ignore_user_abort(true);
 $pastebtn = false;
 $GLOBALS['echo'] = "<!--\nHostBrowser v".V."\n
 Developers: Snehanshu Phukon[snehanshu.glt@gmail.com], Anupam Saikia[ianupamsaikia@gmail.com]\n
-GitHub: https://github.com/anupamsaikia/HostBrowser\n
+GitHub: https://github.com/SnehanshuPhukon/HostBrowser\n
 MADE WITH LOVE IN INDIA\n-->\n";
 
-$GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'><title>HostBrowser - A non-FTP Webhost Filemanager</title><style>body{font-family:arial;margin:0px;background-color:#E0EBF6;height:100%}a{color:#06F;text-decoration:none}a:hover{text-decoration:underline}input,select,textarea,button,.btn{border-radius:5px;background-color:#EAEAEA;border:solid 1px #03F;padding:3px;color:#000}input:hover,select:hover,textarea:hover,button:hover,.btn:hover{background-color:#C8C8C8;text-decoration:none}input:focus,textarea:focus{background-color:#555;color:#FFF;border:dashed 1px #fff;}footer{bottom:0px;width:95%;clear:both;overflow:hidden;background-color:#F3CECE;padding:7px;text-align:center;margin-top:50px;margin-left:0px;border-top:solid 1px #03F}.inline-menu{list-style-type:none}.inline-menu>li{display:inline-block;margin-left:4px}.block{background-color:#FFF;border:solid 1px #03F;border-radius:3px;margin-top:10px}.block-header{font-size:24px;font-weight:bold;padding:3px;background-color:#F3CECE}.block-body{padding:10px;background:transparent}.opt{font-size:12px;padding:0px;margin:0px}.main{padding:5px}.overview{width:100%;height:75%;float:left;clear:left;background-color:#E0EBF6;border:solid 1px #03F}.addr_bar{width:80%}.addr_bar>form>input{width:80%;padding:5px}.browser{list-style-type:none}.browser>li{padding:4px}.odd{background-color:#FFF}.even{}.even:hover,.odd:hover{background-color:#D9D9D9}</style></head><body>";
+$GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' content='text/html;charset=UTF-8'><meta name='robots' content='noindex,nofollow'><title>HostBrowser - A non-FTP Webhost Filemanager</title><style>body{font-family:arial;margin:0px;background-color:#E0EBF6;height:100%}a{color:#06F;text-decoration:none}a:hover{text-decoration:underline}input,select,textarea,button,.btn{border-radius:5px;background-color:#EAEAEA;border:solid 1px #03F;padding:3px;color:#000}input:hover,select:hover,textarea:hover,button:hover,.btn:hover{background-color:#C8C8C8;text-decoration:none}input:focus,textarea:focus{background-color:#555;color:#FFF;border:dashed 1px #fff;}footer{bottom:0px;width:95%;clear:both;overflow:hidden;background-color:#F3CECE;text-align:center;margin-top:50px;margin-left:0px;border-top:solid 1px #03F}.inline-menu{list-style-type:none}.inline-menu>li{display:inline-block;margin-left:4px}.block{background-color:#FFF;border:solid 1px #03F;border-radius:3px;margin-top:10px}.block-header{font-size:24px;font-weight:bold;padding:3px;background-color:#F3CECE}.block-body{padding:10px;background:transparent}.opt{font-size:12px;padding:0px;margin:0px}.main{padding:5px}.overview{width:100%;height:75%;float:left;clear:left;background-color:#E0EBF6;border:solid 1px #03F}.addr_bar{width:80%}.addr_bar>form>input{width:80%;padding:5px}.browser{list-style-type:none}.browser>li{padding:4px}.odd{background-color:#FFF}.even{}.even:hover,.odd:hover{background-color:#D9D9D9}</style></head><body>";
 
 	$act = isset($_GET['act'])?$_GET['act']:'browse';
 	if(isLogged()){
@@ -40,7 +41,7 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 							$cb_array = explode('=',$cbo);
 							$file = urldecode( trim( $cb_array[0]));
 							$mode = $cb_array[1];
-							$GLOBALS['echo'] .= "<li title='$file'>$mode: <u>".htmlspecialchars($file)."</u></li>";
+							$GLOBALS['echo'] .= "<li title='$file'>$mode: <u>".htmlspecialchars(realpath($file))."</u></li>";
 						}
 						$GLOBALS['echo'] .= "</ul>";
 					}else $GLOBALS['echo'] .= "Clipboard is empty";
@@ -54,7 +55,7 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 					$GLOBALS['echo'] .= "</td>";
 					
 					$GLOBALS['echo'] .= "<td valign='top' class='main'>";
-					$GLOBALS['echo'] .= "<div class='addr_bar'><form><span>We are at <a href='?path=".urlencode($ref)."&ref=".urlencode($thisDir)."' title='Goto Last location' class='btn'>&larr;</a></span>&nbsp;<input type='hidden' name='act' value='browse'><input type='text' name='path' autocomplete='off' placeholder='Enter path here...' value='".htmlspecialchars($thisDir)."'>&nbsp;<button type='submit'>Go</button></form>";
+					$GLOBALS['echo'] .= "<div class='addr_bar'><form><span>We are at <a href='?path=".urlencode($ref)."&ref=".urlencode($thisDir)."' title='Goto Last location' class='btn'>&larr;</a></span>&nbsp;<input type='hidden' name='act' value='browse'><input type='text' name='path' autocomplete='off' placeholder='Enter path here...' value='".htmlspecialchars(realpath($thisDir))."'>&nbsp;<button type='submit'>Go</button></form>";
 					if(file_exists($path)){
 						
 						$GLOBALS['echo'] .= "</div>";
@@ -79,7 +80,7 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 								}
 							}
 							$num_of_files = $i - $num_of_dir;
-							$GLOBALS['echo'] .= "<br><form method='post' action='?act=bulk'><input type='hidden' name='thisDir' value='$thisDir'><div class='bulk-operators'><span>Bulk actions: </span><button type='submit' name='act' value='del'>Delete</button>&nbsp;<button type='submit' name='act' value='COPY'>Copy</button>&nbsp;<button type='submit' name='act' value='CUT'>Cut</button><input type='hidden' name='returnto' value='".URL."'>&nbsp;<a href='?act=exec&subact=new&type=dir&to=".urlencode($thisDir)."&returnto=".urlencode(URL)."' class='btn'>New folder</a>&nbsp;<a href='?act=exec&subact=new&type=file&to=".urlencode($thisDir)."&returnto=".urlencode(URL)."' class='btn'>New file</a>&nbsp;<a href='?act=upload&to=".urlencode($thisDir)."' class='btn' target='_blank'>&uarr; Upload</a>&nbsp;";
+							$GLOBALS['echo'] .= "<br><form method='post' action='?act=bulk'><input type='hidden' name='thisDir' value='$thisDir'><div class='bulk-operators'><span>Bulk actions: </span><button type='submit' name='act' value='del'>Delete</button>&nbsp;<button type='submit' name='act' value='COPY'>Copy</button>&nbsp;<button type='submit' name='act' value='CUT'>Cut</button><input type='hidden' name='returnto' value='".URL."'>&nbsp;<a href='?act=exec&subact=new&type=dir&to=".urlencode($thisDir)."&returnto=".urlencode(URL)."' class='btn'>New folder</a>&nbsp;<a href='?act=exec&subact=new&type=file&to=".urlencode($thisDir)."&returnto=".urlencode(URL)."' class='btn'>New file</a>&nbsp;<a href='?act=upload&to=".urlencode($thisDir)."' class='btn' target='_blank'>&uarr; Upload</a>&nbsp;<a href='?act=4mserver&to=".urlencode($thisDir)."' class='btn' target='_blank'>Download from another server</a>&nbsp;";
 							
 							$GLOBALS['echo'] .= "<table class='browser' border='0'>";
 							$GLOBALS['echo'] .= "<tr class='even'><td></td><td><a href='?path=".urlencode($parent).'&ref='.urlencode($path)."'>&uarr; Up...</a></td></tr>";
@@ -104,13 +105,30 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 						}
 						else{
 							$mime = explode('/',mime_content_type($path));
-							msg("File Informations",($mime[0] == 'image'?"<img src='?act=download&file=".urlencode($path)."' width='300'>":($mime[0] == 'text'?"<pre style='text-align:left;max-width:500px;max-height:600px;overflow:scroll;background-color:#eee;'>".htmlspecialchars(file_get_contents($path))."</pre>":($mime[0] == 'audio'?"<audio controls><source src='?act=download&file=".urlencode($path)."' type='".$mime[0].'/'.$mime[1]."'><div style='padding:5em;background-color:#f24;color:#fff;font-size:20px;'>Sorry, Your browser doesn't support HTML5 audio player.</div></audio>":($mime[0] == 'video'?"<video controls width='500'><source src='?act=download&file=".urlencode($path)."' type='".$mime[0].'/'.$mime[1]."'><div style='padding:5em;background-color:#f24;color:#fff;font-size:20px;'>Sorry, Your browser doesn't support HTML5 video player.</div></video>":'<div style="padding:5em;background-color:#f24;color:#fff;font-size:20px;">No preview available for this file.</div>') )))."<ul class='browser'><li>Filename: ".htmlspecialchars(basename($path))."</li><li>Location: ".dirname($path)."</li><li>Filesize: ".goodSize(filesize($path))."</li><li>Filetype: ".$mime[0].'/'.$mime[1]."</li><li><a class='btn' href='?act=exec&subact=rename&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Rename</a> <a class='btn' href='?act=exec&subact=del&file=".urlencode($path)."&returnto=".urlencode("?path=".$parent)."' style='color:red;'>Delete</a> <a class='btn' href='?act=exec&subact=copy&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Copy</a> <a class='btn' href='?act=exec&subact=cut&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Cut</a><!-- <a class='btn' href='?act=exec&subact=perm&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Permissions</a>--> <a class='btn' href='?act=download&file=".urlencode($path)."' target='_blank'>Download</a> ".( @$mime[0] == 'text'? "<a class='btn' href='?act=edit&file=".urlencode($path)."' target='_blank'>Edit</a>":'' )." </li></ul>");
+							msg("File Informations",($mime[0] == 'image'?"<img src='?act=download&file=".urlencode($path)."' width='300'>":($mime[0] == 'text'?"<pre style='text-align:left;max-width:500px;max-height:600px;overflow:scroll;background-color:#eee;'>".htmlspecialchars(file_get_contents($path))."</pre>":($mime[0] == 'audio'?"<audio controls><source src='?act=download&file=".urlencode($path)."' type='".$mime[0].'/'.$mime[1]."'><div style='padding:5em;background-color:#f24;color:#fff;font-size:20px;'>Sorry, Your browser doesn't support HTML5 audio player.</div></audio>":($mime[0] == 'video'?"<video controls width='500'><source src='?act=download&file=".urlencode($path)."' type='".$mime[0].'/'.$mime[1]."'><div style='padding:5em;background-color:#f24;color:#fff;font-size:20px;'>Sorry, Your browser doesn't support HTML5 video player.</div></video>":'<div style="padding:5em;background-color:#f24;color:#fff;font-size:20px;">No preview available for this file.</div>') )))."<ul class='browser'><li>Filename: ".htmlspecialchars(basename($path))."</li><li>Location: ".dirname(realpath($path))."</li><li>Filesize: ".goodSize(filesize($path))."</li><li>Filetype: ".$mime[0].'/'.$mime[1]."</li><li><a class='btn' href='?act=exec&subact=rename&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Rename</a> <a class='btn' href='?act=exec&subact=del&file=".urlencode($path)."&returnto=".urlencode("?path=".$parent)."' style='color:red;'>Delete</a> <a class='btn' href='?act=exec&subact=copy&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Copy</a> <a class='btn' href='?act=exec&subact=cut&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Cut</a><!-- <a class='btn' href='?act=exec&subact=perm&file=".urlencode($path)."&returnto=".urlencode(URL)."'>Permissions</a>--> <a class='btn' href='?act=download&file=".urlencode($path)."' target='_blank'>Download</a> ".( @$mime[0] == 'text'? "<a class='btn' href='?act=edit&file=".urlencode($path)."' target='_blank'>Edit</a>":'' )." </li></ul>");
 						}
 					}
 					else{
-						throwError("This file/folder <u>".htmlspecialchars($path)."</u> doesn't exists.");
+						throwError("This file/folder <u>".htmlspecialchars(realpath($path))."</u> doesn't exists.");
 					}
-				break;
+                break;
+                case "4mserver":
+                    $to = isset($_GET['to'])?$_GET['to']:'./';
+                    if(isset($_POST['link'])){
+                        $local = isset($_POST['local'])?$_POST['local']:mt_rand(100,999).".EXT";
+                        $itime = time();
+                        $res = copy($_POST['link'],$to.'/'.$local);
+                        $ftime = time();
+                        if($res){
+                            msg("Successfully downloaded","The file was successfully downloaded from <u>".htmlspecialchars($_POST['link'])."</u> and saved to <u>".htmlspecialchars(realpath($to.'/'.$local))."</u>.<p><h3>Sats</h3><table cellpadding='4'><tr><td>Time taken</td><td>".($ftime-$itime)." sec</td></tr><tr><td>Average speed</td><td>".(goodSize(filesize($to.'/'.$local)/($ftime-$itime==0?1:$ftime-$itime)))."/s</td></tr></table></p>" );
+                        }
+                        else{
+                            throwError("Oops! The file could not be downloaded from <u>".htmlspecialchars($_POST['link'])."</u>");
+                        }
+                    }else{
+                        msg("Download file from another server","<p>You may download any file from any server. Put the URL below. It will be saved to <u>".htmlspecialchars(realpath($to))."</u></p><form method='post' action='?act=4mserver&to=".urlencode($to)."'><table><tr><td>URL:</td><td><input type='text' placeholder='http://' name='link' required autofocus></td></tr><tr><td>Local filename:</td><td><input type='text' name='local'></td></tr><tr><td></td><td><input type='submit' value='Download'></td></tr></table></form><p><b>Note:</b> The file should not be password protected.</p>");
+                    }
+                break;
 				case "dirprop":
 					$dir = isset($_GET['dir'])?$_GET['dir']:"./";
 					if(is_dir($dir)){
@@ -156,7 +174,7 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 						}
 					}
 					$to = isset($_GET['to'])?$_GET['to']:'/';
-					msg("Upload files","Upload your files to <u>$to</u>.<br><br><form action='?act=upload&returnto=".URL."&confirm=1' method='post' enctype='multipart/form-data'><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><br><input type='submit' value='Upload'><input type='hidden' name='to' value='$to'></form>");
+					msg("Upload files","Upload your files to <u>.htmlspecialchars(realpath($to)).</u>.<br><br><form action='?act=upload&returnto=".URL."&confirm=1' method='post' enctype='multipart/form-data'><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><br><input type='submit' value='Upload'><input type='hidden' name='to' value='$to'></form>");
 				break;
 				case "bulk":
 					if(isset($_POST['act'])){
@@ -188,12 +206,12 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 						$dir = isset($_POST['dir'])?$_POST['dir']:null;
 						$res = zip($dir,(isset($_POST['zipname'])?$_POST['zipname']:"New zip").'.zip',dirname($dir));
 						if($res != false){
-							msg("Succesfully compressed","The folder ".htmlspecialchars($dir)." was successfully compressed to <u>".htmlspecialchars(sanitizePath($res))."</u>.<br><br><a href='".$_GET['returnto']."' class='btn'>Ok</a>");
+							msg("Succesfully compressed","The folder ".htmlspecialchars($dir)." was successfully compressed to <u>".htmlspecialchars(realpath(sanitizePath($res)))."</u>.<br><br><a href='".$_GET['returnto']."' class='btn'>Ok</a>");
 						}else throwError("Failed!<br><br><a href='javascript:history.go(0)' class='btn'>Try again</a>&nbsp;&nbsp;<a href='".$_GET['returnto']."' class='btn'>Ok</a>");
 					}
 					else{
 						$dir = isset($_GET['dir'])?$_GET['dir']:"./";
-						msg("Compress folder","<form method='post' action='?act=compress&confirm=1&returnto=".urlencode($_GET['returnto'])."'>Compress the folder <u>".htmlspecialchars($dir)."</u> to a new zip file.<br>Choose a name: <input type='text' name='zipname' value='".htmlspecialchars(basename($dir))."-compressed'>.zip <input type='submit' value='Compress'> <a class='btn' href='".$_GET['returnto']."'>Cancel</a><input type='hidden' name='dir' value='".htmlspecialchars($dir)."'></form>");					}
+						msg("Compress folder","<form method='post' action='?act=compress&confirm=1&returnto=".urlencode($_GET['returnto'])."'>Compress the folder <u>".htmlspecialchars(realpath($dir))."</u> to a new zip file.<br>Choose a name: <input type='text' name='zipname' value='".htmlspecialchars(basename($dir))."-compressed'>.zip <input type='submit' value='Compress'> <a class='btn' href='".$_GET['returnto']."'>Cancel</a><input type='hidden' name='dir' value='".htmlspecialchars($dir)."'></form>");					}
 				break;
 				case "exec":
 					$subact = isset($_GET['subact'])?$_GET['subact']:'rename';
@@ -202,16 +220,16 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 							if(isset($_GET['confirm'])){
 								$f2del = isset($_GET['file'])?$_GET['file']:'';
 								if(deleteObj($f2del)){
-									msg("Succesful","The file <u>".htmlspecialchars($f2del)."</u> was successfully deleted.<br><br>
+									msg("Succesful","The file <u>".htmlspecialchars(realpath($f2del))."</u> was successfully deleted.<br><br>
 									<a href='".$_GET['returnto']."' class='btn'>Ok</a>");
 								}
 								else{
-									throwError("The file/folder <u>".htmlspecialchars($f2del)."</u> couldn't be deleted.<br><br>
+									throwError("The file/folder <u>".htmlspecialchars(realpath($f2del))."</u> couldn't be deleted.<br><br>
 									<a href='?act=exec&subact=del&confirm=1&file=".urlencode($f2del)."&returnto=".urlencode($_GET['returnto'])."' class='btn'>Try again</a>  <a href='".$_GET['returnto']."' class='btn'>Cancel</a>");
 								}
 							}
 							else{
-								msg('Delete file/folder',"Are you sure you want to delete <u>".htmlspecialchars($_GET['file'])."</u> ?<br><br><a href='?act=exec&subact=del&confirm=1&file=".urlencode($_GET['file'])."&returnto=".$_GET['returnto']."' class='btn'>Yes</a> <a href='".$_GET['returnto']."' class='btn'>No</a>");
+								msg('Delete file/folder',"Are you sure you want to delete <u>".htmlspecialchars(realpath($_GET['file']))."</u> ?<br><br><a href='?act=exec&subact=del&confirm=1&file=".urlencode($_GET['file'])."&returnto=".$_GET['returnto']."' class='btn'>Yes</a> <a href='".$_GET['returnto']."' class='btn'>No</a>");
 							}
 						break;
 						case 'rename':
@@ -219,14 +237,14 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 								$f2ren = isset($_GET['file'])?$_GET['file']:'';
 								$newname = (isset($_GET['newname'])?$_GET['newname']:"file_".mt_rand(100,999).".ext");
 								if(@rename($f2ren,dirname($f2ren)."/".$newname)){
-									msg("Successfully renamed","The file/folder <u>".htmlspecialchars($f2ren)."</u> was successfuly renamed to <u>".htmlspecialchars(dirname($f2ren)."/".$newname)."</u>.<br><br><a href='"."?path=".urlencode(dirname($f2ren))."' class='btn'>Ok</a>");
+									msg("Successfully renamed","The file/folder <u>".htmlspecialchars(realpath($f2ren))."</u> was successfuly renamed to <u>".htmlspecialchars(realpath(dirname($f2ren)."/".$newname))."</u>.<br><br><a href='"."?path=".urlencode(dirname($f2ren))."' class='btn'>Ok</a>");
 								}
 								else{
-									throwError("The file/folder <u>".htmlspecialchars($f2ren)."</u> couldn't renamed to <u>".htmlspecialchars($newname)."</u>.<br><br><a href='?act=exec&subact=rename&confirm=1&file=".urlencode($f2ren)."&newname=".urlencode($newname)."&returnto=".urlencode($_GET['returnto'])."' class='btn'>Try again</a> <a href='".$_GET['returnto']."' class='btn'>Cancel</a>");
+									throwError("The file/folder <u>".htmlspecialchars(realpath($f2ren))."</u> couldn't renamed to <u>".htmlspecialchars(realpath($newname))."</u>.<br><br><a href='?act=exec&subact=rename&confirm=1&file=".urlencode($f2ren)."&newname=".urlencode($newname)."&returnto=".urlencode($_GET['returnto'])."' class='btn'>Try again</a> <a href='".$_GET['returnto']."' class='btn'>Cancel</a>");
 								}
 							}
 							else{
-								msg('Rename file/folder',"Rename this file/folder from <u>".htmlspecialchars($_GET['file'])."</u> to <br><br><form><input type='hidden' name='act' value='exec'><input type='hidden' name='subact' value='rename'><input type='hidden' name='confirm' value='1'><input type='text' name='newname' value='".htmlspecialchars(basename($_GET['file']))."'> <input type='submit' value='Rename'><input type='hidden' name='file' value='".htmlspecialchars($_GET['file'])."'><input type='hidden' name='returnto' value='".$_GET['returnto']."'> <a href='".$_GET['returnto']."' class='btn'>Cancel</a></form>");
+								msg('Rename file/folder',"Rename this file/folder from <u>".htmlspecialchars(realpath($_GET['file']))."</u> to <br><br><form><input type='hidden' name='act' value='exec'><input type='hidden' name='subact' value='rename'><input type='hidden' name='confirm' value='1'><input type='text' name='newname' value='".htmlspecialchars(basename($_GET['file']))."'> <input type='submit' value='Rename'><input type='hidden' name='file' value='".htmlspecialchars($_GET['file'])."'><input type='hidden' name='returnto' value='".$_GET['returnto']."'> <a href='".$_GET['returnto']."' class='btn'>Cancel</a></form>");
 							}
 						break;
 						case 'copy':
@@ -246,7 +264,7 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 												$dest = isset($_POST['to'])?$_POST['to']:".";
 												$zip = new ZipArchive();
 												if($zip->open($_POST['file'])){
-												$zip->extractTo($dest)?msg("Succesfully extracted","The zip file <u>".htmlspecialchars($_POST['file'])."</u> was succesfully extracted.<br><br><a href='?path=".(isset($_GET['returnto'])?urlencode($_GET['returnto']):".")."' class='btn'>Ok</a>"):throwError("Sorry, couldn't open the requested zip file.");
+												$zip->extractTo($dest)?msg("Succesfully extracted","The zip file <u>".htmlspecialchars(realpath($_POST['file']))."</u> was succesfully extracted.<br><br><a href='?path=".(isset($_GET['returnto'])?urlencode($_GET['returnto']):".")."' class='btn'>Ok</a>"):throwError("Sorry, couldn't open the requested zip file.");
 												}
 												else{
 													throwError("Sorry, couldn't open the requested zip file.");
@@ -285,20 +303,20 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 										if (is_dir($file)){
 											if($mode == "COPY"){
 												if(copyDir($file, $_GET['to'])){
-													msg("Successfuly copied","The directory <u>".htmlspecialchars($file)."</u> was successfuly copied to <u>".htmlspecialchars($_GET['to'])."</u><br><br><a href='?path=".urlencode($_GET['to'])."' class='btn'>Ok</a>");
+													msg("Successfuly copied","The directory <u>".htmlspecialchars(realpath($file))."</u> was successfuly copied to <u>".htmlspecialchars(realpath($_GET['to']))."</u><br><br><a href='?path=".urlencode($_GET['to'])."' class='btn'>Ok</a>");
 												}
 												else{
 													$ok = false;
-													throwError("The directory <u>".htmlspecialchars($file)."</u> couldn't be copied to <u>".htmlspecialchars($_GET['to'])."</u><br><br><a href='?act=exec&subact=paste&to=".urlencode($_GET['to'])."' class='btn'>Try again</a><a href='?path=".urlencode($_GET['to'])."' class='btn'>Cancel</a>");
+													throwError("The directory <u>".htmlspecialchars(realpath($file))."</u> couldn't be copied to <u>".htmlspecialchars(realpath($_GET['to']))."</u><br><br><a href='?act=exec&subact=paste&to=".urlencode($_GET['to'])."' class='btn'>Try again</a><a href='?path=".urlencode($_GET['to'])."' class='btn'>Cancel</a>");
 												}
 											}
 											else{
 												if(rename($file, $_GET['to'].'/'.basename($file))){
-													msg("Successfuly moved","The directory <u>".htmlspecialchars($file)."</u> was successfuly moved to <u>".htmlspecialchars($_GET['to'])."</u><br><br><a href='?path=".urlencode($_GET['to'])."' class='btn'>Ok</a>");
+													msg("Successfuly moved","The directory <u>".htmlspecialchars(realpath($file))."</u> was successfuly moved to <u>".htmlspecialchars(realpath($_GET['to']))."</u><br><br><a href='?path=".urlencode($_GET['to'])."' class='btn'>Ok</a>");
 												}
 												else{
 													$ok = false;
-													throwError("The directory <u>".htmlspecialchars($file)."</u> couldn't be moved to <u>".htmlspecialchars($_GET['to'])."</u><br><br><a href='?act=exec&subact=paste&to=".urlencode($_GET['to'])."' class='btn'>Try again</a><a href='?path=".urlencode($_GET['to'])."' class='btn'>Cancel</a>");
+													throwError("The directory <u>".htmlspecialchars(realpath($file))."</u> couldn't be moved to <u>".htmlspecialchars(realpath($_GET['to']))."</u><br><br><a href='?act=exec&subact=paste&to=".urlencode($_GET['to'])."' class='btn'>Try again</a><a href='?path=".urlencode($_GET['to'])."' class='btn'>Cancel</a>");
 												}
 											}
 										}
@@ -306,18 +324,18 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 											$to = $_GET['to'].'/'.basename($file);
 											if($mode == "COPY"){
 												if( copy($file,$to)){
-													msg("Successful","The file <u>".htmlspecialchars($file)."</u> was successfuly copied to <u>".htmlspecialchars($to)."</u><br><br><a href='?path=".urlencode($_GET['to'])."' class='btn'>Ok</a>");
+													msg("Successful","The file <u>".htmlspecialchars(realpath($file))."</u> was successfuly copied to <u>".htmlspecialchars(realpath($to))."</u><br><br><a href='?path=".urlencode($_GET['to'])."' class='btn'>Ok</a>");
 												}else{
 													$ok = false;
-													throwError("Failed to copy the file <u>".htmlspecialchars($file)."</u> to <u>".htmlspecialchars($to)."</u><br><br><a href='?act=exec&subact=paste&to=".urlencode($_GET['to'])."' class='btn'>Try again</a><a href='?path=".urlencode($_GET['to'])."' class='btn'>Cancel</a>");
+													throwError("Failed to copy the file <u>".htmlspecialchars(realpath($file))."</u> to <u>".htmlspecialchars(realpath($to))."</u><br><br><a href='?act=exec&subact=paste&to=".urlencode($_GET['to'])."' class='btn'>Try again</a><a href='?path=".urlencode($_GET['to'])."' class='btn'>Cancel</a>");
 												}
 											}
 											else{
 												if(rename($file,$to)){
-													msg("Successful","The file <u>".htmlspecialchars($file)."</u> was successfuly moved to <u>".htmlspecialchars($to)."</u><br><br><a href='?path=".urlencode($_GET['to'])."' class='btn'>Ok</a>");
+													msg("Successful","The file <u>".htmlspecialchars(realpath($file))."</u> was successfuly moved to <u>".htmlspecialchars(realpath($to))."</u><br><br><a href='?path=".urlencode($_GET['to'])."' class='btn'>Ok</a>");
 												}else{
 													$ok = false;
-													throwError("Failed to move the file from <u>".htmlspecialchars($file)."</u> to <u>".htmlspecialchars($to)."</u><br><br><a href='?act=exec&subact=paste&to=".urlencode($_GET['to'])."' class='btn'>Try again</a><a href='?path=".urlencode($_GET['to'])."' class='btn'>Cancel</a>");
+													throwError("Failed to move the file from <u>".htmlspecialchars(realpath($file))."</u> to <u>".htmlspecialchars(realpath($to))."</u><br><br><a href='?act=exec&subact=paste&to=".urlencode($_GET['to'])."' class='btn'>Try again</a><a href='?path=".urlencode($_GET['to'])."' class='btn'>Cancel</a>");
 												}
 											}
 										}
@@ -332,29 +350,29 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 							if(isset($_POST['name'])){
 								if($type == "dir"){
 									if(mkdir($_POST['to'].'/'.$_POST['name'])){
-										msg("Succesful","The folder <u>".htmlspecialchars($_POST['to'].'/'.$_POST['name'])."</u> was successfuly created.<br><br><a href='".$_POST['returnto']."' class='btn'>Ok</a>");
+										msg("Succesful","The folder <u>".htmlspecialchars(realpath($_POST['to'].'/'.$_POST['name']))."</u> was successfuly created.<br><br><a href='".$_POST['returnto']."' class='btn'>Ok</a>");
 									}
 									else{
-										throwError("The folder <u>".htmlspecialchars($_POST['to'].'/'.$_POST['name'])."</u> couldn't be created.<br><br><a href='".$_POST['returnto']."' class='btn'>Cancel</a>");
+										throwError("The folder <u>".htmlspecialchars(realpath($_POST['to'].'/'.$_POST['name']))."</u> couldn't be created.<br><br><a href='".$_POST['returnto']."' class='btn'>Cancel</a>");
 									}
 								}
 								else{
 									if($f = fopen($_POST['to'].'/'.$_POST['name'],'w')){
 										fwrite($f,"Created on ".date("d-m-Y"));
-										msg("Succesful","The file <u>".htmlspecialchars($_POST['to'].'/'.$_POST['name'])."</u> was successfuly created.<br><br><a href='".$_POST['returnto']."' class='btn'>Ok</a>");
+										msg("Succesful","The file <u>".htmlspecialchars(realpath($_POST['to'].'/'.$_POST['name']))."</u> was successfuly created.<br><br><a href='".$_POST['returnto']."' class='btn'>Ok</a>");
 									}
 									else{
-										throwError("The file <u>".htmlspecialchars($_POST['to'].'/'.$_POST['name'])."</u> couldn't be created.<br><br><a href='".$_POST['returnto']."' class='btn'>Cancel</a>");
+										throwError("The file <u>".htmlspecialchars(realpath($_POST['to'].'/'.$_POST['name']))."</u> couldn't be created.<br><br><a href='".$_POST['returnto']."' class='btn'>Cancel</a>");
 									}
 								}
 							}
 							else{
 								$to = isset($_GET['to'])?$_GET['to']:"/";
 								if($type == "dir"){
-									msg("Create new folder","Create new folder in <u>".htmlspecialchars($to)."</u>.<br><br><form action='?act=exec&subact=new&type=dir' method='post'>Name: <input type='text' name='name' value='New folder'><br><br><input type='submit' value='Create'><input type='hidden' name='to' value='".htmlspecialchars($to)."'><input type='hidden' name='returnto' value='".$_GET['returnto']."'></form>");
+									msg("Create new folder","Create new folder in <u>".htmlspecialchars(realpath($to))."</u>.<br><br><form action='?act=exec&subact=new&type=dir' method='post'>Name: <input type='text' name='name' value='New folder'><br><br><input type='submit' value='Create'><input type='hidden' name='to' value='".htmlspecialchars($to)."'><input type='hidden' name='returnto' value='".$_GET['returnto']."'></form>");
 								}
 								else{
-									msg("Create new file","Create new file in <u>".htmlspecialchars($to)."</u>.<br><br><form action='?act=exec&subact=new&type=file' method='post'>Name: <input type='text' name='name' value='New file.txt'><br><br><input type='submit' value='Create'><input type='hidden' name='to' value='".htmlspecialchars($to)."'><input type='hidden' name='returnto' value='".$_GET['returnto']."'></form>");
+									msg("Create new file","Create new file in <u>".htmlspecialchars(realpath($to))."</u>.<br><br><form action='?act=exec&subact=new&type=file' method='post'>Name: <input type='text' name='name' value='New file.txt'><br><br><input type='submit' value='Create'><input type='hidden' name='to' value='".htmlspecialchars($to)."'><input type='hidden' name='returnto' value='".$_GET['returnto']."'></form>");
 								}
 							}
 						break;
@@ -371,7 +389,7 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 						
 						if($_COOKIE['editor']){
 							$url = basename(__FILE__).'?act=edit&file='.urlencode($file);
-							$name = htmlspecialchars($file);
+							$name = htmlspecialchars(realpath($file));
 							$content = htmlspecialchars(file_get_contents($file));
 							$ext = pathinfo($file, PATHINFO_EXTENSION);
 							
@@ -522,10 +540,12 @@ box-sizing: border-box;
 		default : mode='text';break;
 	}
 	editor.session.setMode('ace/mode/'+mode);
-	editor.setTheme('ace/theme/chrome');
+	editor.setTheme('ace/theme/tomorrow_night');
 	editor.setAutoScrollEditorIntoView(true);
 	editor.setShowPrintMargin(false);
-	editor.\$blockScrolling = Infinity;
+    editor.\$blockScrolling = Infinity;
+    document.getElementById('editor').style.fontSize='14px';
+
 	//editor.setValue('');
 
 	var fullScreen = dom.toggleCssClass(document.body, 'fullScreen')
@@ -606,7 +626,7 @@ box-sizing: border-box;
 
 						}
 						else{
-							$GLOBALS['echo'] .= "<form method='post' action='?act=edit&file=".urlencode($file)."'><div class='block'><div class='block-header'>Editing <u>".htmlspecialchars($file)."</u><span style='float:right;margin:3px;'>".($saveOk?"Saved":"Not saved")."</span><button type='submit' style='font-size:20px;float:right;'>Save</button></div>";
+							$GLOBALS['echo'] .= "<form method='post' action='?act=edit&file=".urlencode($file)."'><div class='block'><div class='block-header'>Editing <u>".htmlspecialchars(realpath($file))."</u><span style='float:right;margin:3px;'>".($saveOk?"Saved":"Not saved")."</span><button type='submit' style='font-size:20px;float:right;'>Save</button></div>";
 							$mime = explode( '/',@mime_content_type($file));
 							if($mime[0] == "text"){
 								$content = htmlspecialchars(file_get_contents($file));
@@ -661,7 +681,7 @@ box-sizing: border-box;
 
 	}
 
-$GLOBALS['echo'] .= "<footer><ul class='inline-menu'><li><a href='".$_SERVER['PHP_SELF']."?path=.'>Home</a></li><li>|</li><li><a href='https://twitter.com/SnehanshuPhukon' title='Follow me on Twitter' target='_blank'>@SnehanshuPhukon</a></li><li>|</li><li><a href='https://github.com/SnehanshuPhukon/HostBrowser' title='HostBrowser on GitHub' target='_blank'>GitHub</a></li></ul></footer></body></html>";
+    $GLOBALS['echo'] .= "<footer><ul class='inline-menu'><li><a href='".$_SERVER['PHP_SELF']."?path=.'>Home</a></li><li>|</li><li><a href='https://twitter.com/SnehanshuPhukon' title='Follow me on Twitter' target='_blank'>@SnehanshuPhukon</a></li><li>|</li><li><a href='https://github.com/SnehanshuPhukon/HostBrowser' title='HostBrowser on GitHub' target='_blank'>GitHub</a></li><li>|</li><li>Page generated in ".(time()-$start_time)." sec</li></ul></footer></body></html>";
 
 echo $GLOBALS['echo'];
 
