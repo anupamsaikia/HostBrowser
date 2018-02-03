@@ -163,18 +163,18 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 								if(move_uploaded_file($_FILES['file']['tmp_name'][$i], $uto.'/'.$_FILES['file']['name'][$i]))$ok = true;
 							}
 							if($ok){
-								msg("Successful","The file(s) were successfuly uploaded and saved to <u>/".htmlspecialchars($uto)."</u>.");
+								msg("Successful","The file(s) were successfuly uploaded and saved to <u>/".htmlspecialchars(realpath($to))."</u>.");
 							}
 							else{
 								throwError("Some file(s) couldn't be uploaded.");
 							}
 						}
 						else{
-							throwError("The destination <u>".htmlspecialchars($uto)."</u> doesn't exists.");
+							throwError("The destination <u>".htmlspecialchars(realpath($to))."</u> doesn't exists.");
 						}
 					}
 					$to = isset($_GET['to'])?$_GET['to']:'/';
-					msg("Upload files","Upload your files to <u>.htmlspecialchars(realpath($to)).</u>.<br><br><form action='?act=upload&returnto=".URL."&confirm=1' method='post' enctype='multipart/form-data'><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><br><input type='submit' value='Upload'><input type='hidden' name='to' value='$to'></form>");
+					msg("Upload files","Upload your files to <u>".htmlspecialchars(realpath($to))."</u>.<br><br><form action='?act=upload&returnto=".URL."&confirm=1' method='post' enctype='multipart/form-data'><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><input type='file' name='file[]'><br><br><input type='submit' value='Upload'><input type='hidden' name='to' value='$to'></form>");
 				break;
 				case "bulk":
 					if(isset($_POST['act'])){
@@ -395,7 +395,14 @@ $GLOBALS['echo'] .="<!doctype html><html><head><meta http-equiv='Content-Type' c
 							
 
 							echo "
+<html>
+<head>
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0\">
+    <title>Advanced code editor - HostBrowser</title>
 <style type='text/css' media='screen'>
+* {
+box-sizing: border-box;
+}
 .ace_editor {
 	position: relative !important;
 	border: 1px solid lightgray;
@@ -431,9 +438,7 @@ body{
 	left: 0;
 	right: 0;
 }
-* {
-box-sizing: border-box;
-}
+
 .info{
 	overflow: hidden;
 	text-align: center;
@@ -513,6 +518,8 @@ box-sizing: border-box;
     to {bottom: 0; opacity: 0;}
 }
 </style>
+</head>
+<body>
 <div style='background-color:#eee;'><div class='info file'>$name</div><div class='info mode' id='mode'>text</div><div class='info shortcuts'>Save: <strong>Ctrl+S</strong> Settings: <strong>Ctrl+Q</strong> View Shortcuts: <strong>Ctrl+Alt+H</strong></div><div class='info save' onclick='save()'><strong>Save</strong></div></div>
 
 <pre id='editor'>$content</pre>
@@ -556,7 +563,7 @@ box-sizing: border-box;
 	editor.setOptions({
 		enableBasicAutocompletion: true,
 		enableSnippets: true,
-		enableLiveAutocompletion: false
+		enableLiveAutocompletion: true
 	});
 
 	editor.commands.addCommands([{
@@ -621,8 +628,9 @@ box-sizing: border-box;
 		x.className = 'show';
 		setTimeout(function(){ x.className = x.className.replace('show', ''); }, 1000);
 	}
-</script>
+</script></body></html>
 							";
+							exit;
 
 						}
 						else{
